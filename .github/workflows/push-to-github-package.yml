@@ -22,6 +22,8 @@ jobs:
       - name: Log in to the Container registry
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
+          image: test-docker-registry
+          tags: latest
           registry: ghcr.io
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.TOKEN }}
