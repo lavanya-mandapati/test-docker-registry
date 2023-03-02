@@ -23,7 +23,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
           registry: ghcr.io
-          username: ${{ secrets.username }}
+          username: ${{ secrets.USERNAME }}
           password: ${{ secrets.TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
