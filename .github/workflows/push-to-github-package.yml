@@ -24,7 +24,7 @@ jobs:
         with:
           registry: ghcr.io
           username: lavanya-mandapati
-          password: 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
+          password: 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
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
