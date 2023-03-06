@@ -42,11 +42,11 @@ jobs:
           mkdir -p /home/runner/.ssh
           echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
           echo -e "${{ secrets.SSH_PEM_KEY }}" > /home/runner/.ssh/github_actions
-          chmod 444 /home/runner/.ssh/github_actions
+          chmod 600 /home/runner/.ssh/github_actions
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null   
           ssh-add /home/runner/
       - name: Build and deploy
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.IP_ADDRESS }} -i ~/.ssh/github_actions "docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }};
+          ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.IP_ADDRESS }} -i ~/.ssh/github_actions "docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
