@@ -1,32 +1,32 @@
 
 
-name: Create and publish a Docker-image-only-to-git
+# name: Create and publish a Docker-image-only-to-git
 
-on: [push]
+# on: [push]
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: test-docker-registry
+# env:
+#   REGISTRY: ghcr.io
+#   IMAGE_NAME: test-docker-registry
 
-jobs:
-  build-and-push-image:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+# jobs:
+#   build-and-push-image:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       packages: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
-        uses: mr-smithers-excellent/docker-build-push@v5
-        with:
-          image: test-docker-registry
-          registry: ghcr.io
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.TOKEN }}
-          tags: latest
+#       - name: Log in to the Container registry
+#         uses: mr-smithers-excellent/docker-build-push@v5
+#         with:
+#           image: test-docker-registry
+#           registry: ghcr.io
+#           username: ${{ secrets.USERNAME }}
+#           password: ${{ secrets.TOKEN }}
+#           tags: latest
 
 #       - name: Extract metadata (tags, labels) for Docker
 #         id: meta
