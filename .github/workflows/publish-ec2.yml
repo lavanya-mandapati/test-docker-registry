@@ -25,7 +25,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   deploy:
     name: deploy to EC2
     runs-on: ubuntu-latest
@@ -65,7 +66,7 @@ jobs:
         with:
           command: |
             docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
-            docker pull lavanya81/test-docker-git:latest
+            docker pull lavanya81/test-docker-git:master
           host: ${{ steps.ipaddress.outputs.ipaddress }}
           user: ubuntu
           key: ${{ secrets.SSH_KEY}}
