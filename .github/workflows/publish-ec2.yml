@@ -67,5 +67,5 @@ jobs:
           command: |
             echo "test connection"
           host: ${{ steps.ipaddress.outputs.ipaddress }}
-          user: ec2-user
+          user: ubuntu
           key: ${{ secrets.SSH_KEY}}
