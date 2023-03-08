@@ -63,9 +63,9 @@ jobs:
         run: echo "${{ steps.ipaddress.outputs.ipaddress }}"
       - name: connect to ec2 instance
         uses: fifsky/ssh-action@master
-      - name: login in to docker
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
         with:
+          command: |
+            docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
           host: ${{ steps.ipaddress.outputs.ipaddress }}
           user: ubuntu
           key: ${{ secrets.SSH_KEY}}
