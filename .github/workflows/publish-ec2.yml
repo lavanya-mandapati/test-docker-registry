@@ -33,33 +33,39 @@ jobs:
     needs:
       - push_to_registry
     steps:
-      - name: checking into repo
-        uses: actions/checkout@v2
-      - name: Add SSH key
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          mkdir -p /home/runner/.ssh
-          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-          echo -e "${{ secrets.SSH_KEY }}" > /home/runner/.ssh/github_actions
-          chmod 600 /home/runner/.ssh/github_actions
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add /home/runner/
-      - name: Build and deploy
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.IP_ADDRESS }} -i ~/.ssh/github_actions "docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
-      # - name: get ec2 ip address
-      #   id: ipaddress
-      #   run: echo "ipaddress=`aws ec2 describe-instances --query="Reservations[0].Instances[0].PublicIpAddress" --filters Name=tag:Name,Values="to-test-docker-ec2"  Name=tag:email,Values="lavanya.mandapati@zemosolabs.com" | xargs`" >> $GITHUB_OUTPUT
-      # - name: Public IP Address of EC2 instance
-      #   run: echo "${{ steps.ipaddress.outputs.ipaddress }}"
-      # - name: connect to ec2 instance
-      #   uses: fifsky/ssh-action@master
-      #   with:
-      #     command: |
-      #       echo "test connection"
-      #     host: ${{ steps.ipaddress.outputs.ipaddress }}
-      #     user: ec2-user
-      #     key: ${{ secrets.SSH_KEY}}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+      # - name: checking into repo
+      #   uses: actions/checkout@v2
+      # - name: Add SSH key
+      #   env:
+      #     SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      #   run: |
+      #     mkdir -p /home/runner/.ssh
+      #     echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+      #     echo -e "${{ secrets.SSH_KEY }}" > /home/runner/.ssh/github_actions
+      #     chmod 600 /home/runner/.ssh/github_actions
+      #     ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+      #     ssh-add /home/runner/
+      # - name: Build and deploy
+      #   env:
+      #     SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      #   run: |
+      #     ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.IP_ADDRESS }} -i ~/.ssh/github_actions "docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+      - name: get ec2 ip address
+        id: ipaddress
+        run: echo "ipaddress=`aws ec2 describe-instances --query="Reservations[0].Instances[0].PublicIpAddress" --filters Name=tag:Name,Values="to-test-docker-image-ec2" | xargs`" >> $GITHUB_OUTPUT
+      - name: Public IP Address of EC2 instance
+        run: echo "${{ steps.ipaddress.outputs.ipaddress }}"
+      - name: connect to ec2 instance
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            echo "test connection"
+          host: ${{ steps.ipaddress.outputs.ipaddress }}
+          user: ec2-user
+          key: ${{ secrets.SSH_KEY}}
